@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Metodologías de Modelado de Amenazas</title>
+
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            font-family: Georgia, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            margin: 60px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #38bdf8;
+            margin-bottom: 40px;
+        }
+
+        h2,
+        h3 {
+            color: #38bdf8;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 6px;
+            margin-top: 40px;
+        }
+
+        p {
+            text-align: justify;
+            margin-bottom: 18px;
+        }
+
+        ul {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .indice {
+            background-color: #1e293b;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            margin-bottom: 50px;
+        }
+
+        .indice a {
+            color: #facc15;
+            text-decoration: none;
+        }
+
+        .indice a:hover {
+            text-decoration: underline;
+        }
+
+        .box {
+            background-color: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #facc15;
+            font-weight: bold;
+        }
+
+        .top-link {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .top-link a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+        #practica p {
+            font-family: Georgia, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+        }
+
+        #practica ul {
+            font-family: Georgia, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+        }
+
+        .modelo-imagen {
+            margin: 30px auto;
+            padding: 20px;
+            border: 1px dashed #555;
+            border-radius: 8px;
+            max-width: 800px;
+        }
+
+        .modelo-imagen img {
+            width: 100%;
+            border-radius: 6px;
+        }
+
+        .tabla-amenazas {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-family: Georgia, serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            background-color: #111827;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tabla-amenazas th {
+            background-color: #1f2937;
+            color: #38bdf8;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #334155;
+        }
+
+        .tabla-amenazas td {
+            padding: 12px;
+            border-bottom: 1px solid #1e293b;
+            color: #e5e7eb;
+        }
+
+        .tabla-amenazas tr:nth-child(even) {
+            background-color: #0f172a;
+        }
+
+        .tabla-amenazas tr:hover {
+            background-color: #1e293b;
+            transition: 0.3s;
+        }
+
+        .seccion-stride {
+            margin-top: 60px;
+        }
+
+        .seccion-stride h2 {
+            border-bottom: 2px solid #38bdf8;
+            padding-bottom: 6px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 id="inicio">METODOLOGÍAS DE MODELADO DE AMENAZAS</h1>
+    <h1>Sebastián Zúñiga Torres -- DS01SV-25 -- SEG.APPS -- Febrero 2026</h1>
+
+    <nav class="indice">
+        <h2>Índice</h2>
+        <ol>
+
+            <li><a href="#introduccion">Introducción al Modelado de Amenazas</a></li>
+
+            <li>
+                <a href="#estudio">Estudio de Metodologías Existentes</a>
+                <ol>
+                    <li><a href="#stride">2.1 STRIDE</a></li>
+                    <li><a href="#dread">2.2 DREAD</a></li>
+                    <li><a href="#octave">2.3 OCTAVE</a></li>
+                    <li><a href="#pasta">2.4 PASTA</a></li>
+                    <li><a href="#magerit">2.5 MAGERIT</a></li>
+                </ol>
+            </li>
+
+            <li><a href="#metodologia-profundidad">3. Metodología Seleccionada en Profundidad</a></li>
+
+            <li><a href="#tablas-dread">4. Desarrollo de la Práctica: Modelado de Amenazas con Microsoft Threat Modeling
+                    Tool</a>
+            </li>
+
+            <li><a href="#tablas-stride">5. Tablas con amenazas STRIDE</a></li>
+
+            <li><a href="#tablas-dread2">6. Tablas con amenazas DREAD</a></li>
+
+            <li><a href="#matriz">7. Matriz Global de Riesgo</a></li>
+
+            <li><a href="#ranking">8. Ranking General de Amenazas Prioritarias</a></li>
+
+            <li><a href="#conclusiones">Conclusiones Técnicas Finales</a></li>
+
+        </ol>
+    </nav>
+
+    <h2 id="introduccion">1. Introducción al Modelado de Amenazas</h2>
+
+    <p>
+        El <span class="highlight">modelado de amenazas</span> es una disciplina formal dentro de la ingeniería de
+        seguridad cuyo propósito es identificar, analizar y mitigar amenazas potenciales
+        que pueden afectar a un sistema de información antes de su implementación.
+        Forma parte integral de las prácticas de desarrollo seguro y se enmarca dentro
+        del paradigma de <em>Security by Design</em>, que establece que la seguridad debe
+        integrarse desde las primeras fases del diseño arquitectónico y no añadirse
+        como un mecanismo reactivo posterior.
+    </p>
+
+    <div class="box">
+        <strong>Objetivos principales:</strong>
+        <ul>
+            <li>Identificar activos críticos del sistema.</li>
+            <li>Detectar amenazas potenciales.</li>
+            <li>Evaluar impacto y probabilidad.</li>
+            <li>Definir salvaguardas de mitigación.</li>
+            <li>Reducir el riesgo residual.</li>
+        </ul>
+    </div>
+
+    <p>
+        En el contexto del Ciclo de Vida del Desarrollo de Software (SDLC),
+        el modelado de amenazas se sitúa principalmente en la fase de
+        <span class="highlight">análisis de requisitos y diseño</span>. En esta etapa se identifican
+        activos críticos, flujos de información, puntos de confianza,
+        fronteras de seguridad y posibles superficies de ataque.
+        Al realizar este análisis de manera temprana, se reduce el costo
+        de mitigación de vulnerabilidades, ya que corregir fallos de
+        seguridad en fases posteriores implica mayor complejidad técnica
+        y mayor impacto económico.
+    </p>
+
+    <p>
+        Desde una perspectiva metodológica, el modelado de amenazas se apoya
+        en representaciones estructuradas como los <strong>Diagramas de Flujo de Datos (DFD)</strong>,
+        los cuales permiten visualizar:
+    </p>
+
+    <ul>
+        <li>Entidades externas que interactúan con el sistema.</li>
+        <li>Procesos que transforman información.</li>
+        <li>Almacenes de datos persistentes.</li>
+        <li>Flujos de datos entre componentes.</li>
+        <li>Fronteras de confianza.</li>
+    </ul>
+
+    <p>
+        La identificación de amenazas se realiza analizando cada uno de estos
+        elementos y evaluando cómo podrían ser explotados por un actor malicioso.
+        El análisis no se limita únicamente a vulnerabilidades técnicas,
+        sino que también contempla riesgos organizativos, humanos y operacionales.
+    </p>
+
+    <p>
+        En aplicaciones web modernas —especialmente aquellas que gestionan
+        <span class="highlight">transacciones electrónicas</span>— el modelado de amenazas adquiere
+        una relevancia estratégica. Sistemas de comercio electrónico manejan
+        información sensible como credenciales de acceso, datos financieros,
+        información personal identificable (PII) y registros de transacciones.
+        Un fallo de seguridad en este contexto puede derivar en:
+    </p>
+
+    <ul>
+        <li>Pérdidas económicas directas.</li>
+        <li>Daño reputacional.</li>
+        <li>Sanciones regulatorias.</li>
+        <li>Compromiso de datos personales.</li>
+    </ul>
+
+    <p>
+        Por tanto, el modelado de amenazas no solo cumple una función técnica,
+        sino también una función de <span class="highlight">gestión del riesgo empresarial</span>.
+        Permite priorizar inversiones en seguridad, justificar controles
+        de mitigación y garantizar el cumplimiento de normativas vigentes.
+    </p>
+
+    <p>
+        Finalmente, es importante destacar que el modelado de amenazas es un
+        proceso iterativo. A medida que evoluciona la arquitectura del sistema
+        o cambian los requisitos funcionales, el análisis debe actualizarse
+        para reflejar nuevas superficies de ataque o modificaciones en el
+        entorno operativo. De esta manera, el modelo de amenazas se convierte
+        en un artefacto vivo dentro de la documentación de seguridad del sistema.
+    </p>
+
+    <div class="top-link"><a href="#inicio">Volver al índice ↑</a></div>
+
+    <h2 id="estudio">2. Estudio de Metodologías Existentes</h2>
+
+    <p>
+        Existen diversas metodologías consolidadas que permiten estructurar el proceso
+        de identificación y evaluación de amenazas. Cada una presenta un enfoque
+        particular orientado a diferentes necesidades organizativas y técnicas.
+
+    <div class="box">
+        <strong>Metodologías</strong>
+        <ul>
+            <li>STRIDE</li>
+            <li>DREAD</li>
+            <li>PASTA</li>
+            <li>OCTAVE</li>
+            <li>MAGERIT</li>
+        </ul>
+    </div>
+
+    </p>
+
+    <h3 id="stride">2.1 STRIDE</h3>
+
+    <p>
+        STRIDE es una metodología desarrollada por Microsoft dentro de su
+        Security Development Lifecycle (SDL), cuyo objetivo es clasificar
+        de manera sistemática las amenazas que pueden afectar a un sistema
+        de información. Su enfoque se basa en identificar vulnerabilidades
+        a partir de los distintos elementos que componen un Diagrama de
+        Flujo de Datos (DFD), tales como procesos, flujos de datos,
+        almacenamientos y entidades externas.
+    </p>
+
+    <p>
+        La fortaleza de STRIDE radica en su estructura clara y su
+        capacidad para mapear amenazas directamente sobre componentes
+        arquitectónicos. Cada categoría representa un tipo específico
+        de riesgo que compromete propiedades fundamentales de la
+        seguridad como autenticidad, integridad, confidencialidad,
+        disponibilidad y control de acceso.
+    </p>
+
+    <p>
+        Las seis categorías fundamentales que componen STRIDE son:
+    </p>
+
+    <div class="box">
+        <ul>
+            <li><strong>Spoofing</strong> – Suplantación de identidad.</li>
+            <li><strong>Tampering</strong> – Manipulación de datos.</li>
+            <li><strong>Repudiation</strong> – Negación de acciones realizadas.</li>
+            <li><strong>Information Disclosure</strong> – Exposición no autorizada de información.</li>
+            <li><strong>Denial of Service</strong> – Interrupción del servicio.</li>
+            <li><strong>Elevation of Privilege</strong> – Escalada de privilegios.</li>
+        </ul>
+    </div>
+
+    <p>
+        A continuación se describe brevemente en qué consiste cada una de estas categorías:
+    </p>
+
+    <ul>
+        <li>
+            <strong>Spoofing:</strong> Consiste en la suplantación de identidad de un usuario,
+            proceso o sistema. El atacante intenta hacerse pasar por una entidad legítima
+            para obtener acceso no autorizado. Este tipo de amenaza compromete la
+            propiedad de <em>autenticidad</em> del sistema.
+        </li>
+
+        <li>
+            <strong>Tampering:</strong> Implica la modificación no autorizada de datos,
+            ya sea en tránsito o en almacenamiento. Afecta directamente la
+            <em>integridad</em> de la información, pudiendo alterar transacciones,
+            configuraciones o registros críticos.
+        </li>
+
+        <li>
+            <strong>Repudiation:</strong> Se produce cuando un usuario o entidad niega
+            haber realizado una acción sin que exista evidencia suficiente
+            para demostrar lo contrario. Esta amenaza se mitiga mediante
+            mecanismos de auditoría, registros y trazabilidad.
+        </li>
+
+        <li>
+            <strong>Information Disclosure:</strong> Hace referencia a la exposición
+            no autorizada de información sensible. Puede afectar datos
+            personales, financieros o estratégicos, comprometiendo la
+            <em>confidencialidad</em>.
+        </li>
+
+        <li>
+            <strong>Denial of Service (DoS):</strong> Ocurre cuando un atacante
+            intenta degradar o interrumpir la disponibilidad del servicio,
+            impidiendo que usuarios legítimos puedan acceder al sistema.
+            Afecta directamente la propiedad de <em>disponibilidad</em>.
+        </li>
+
+        <li>
+            <strong>Elevation of Privilege:</strong> Se produce cuando un usuario
+            obtiene permisos superiores a los que le corresponden,
+            rompiendo el principio de mínimo privilegio y comprometiendo
+            el control de acceso.
+        </li>
+    </ul>
+
+    <p>
+        Cada una de estas categorías puede aplicarse de forma sistemática
+        a los elementos de un DFD, permitiendo identificar amenazas
+        potenciales de manera estructurada y repetible. Esta clasificación
+        facilita además la posterior evaluación de riesgo mediante
+        modelos complementarios como DREAD.
+    </p>
+
+    <p>
+        Es ampliamente utilizada por su claridad conceptual y su integración
+        directa con herramientas como Threat Analysis and Modeling Tool.
+    </p>
+
+    <div class="top-link"><a href="#inicio">Volver al índice ↑</a></div>
+
+    <h3 id="dread">2.2 DREAD</h3>
+
+    <p>
+        DREAD es un modelo de evaluación de riesgo propuesto por Microsoft
+        como complemento a STRIDE. Mientras STRIDE permite clasificar las
+        amenazas según su naturaleza, DREAD proporciona un mecanismo
+        cuantitativo para estimar la severidad de cada amenaza identificada.
+        Su finalidad es facilitar la priorización de riesgos dentro del
+        proceso de toma de decisiones en seguridad.
+    </p>
+
+    <p>
+        El modelo se basa en la valoración de cinco factores que permiten
+        estimar tanto el impacto como la probabilidad de explotación de
+        una amenaza. Cada factor suele evaluarse en una escala numérica
+        ( comúnmente de 1 a 10 ), y el promedio resultante representa
+        el nivel global de riesgo asociado.
+    </p>
+
+    <div class="box">
+        <ul>
+            <li><strong>Damage Potential</strong> – Potencial de daño.</li>
+            <li><strong>Reproducibility</strong> – Facilidad de reproducción.</li>
+            <li><strong>Exploitability</strong> – Facilidad de explotación.</li>
+            <li><strong>Affected Users</strong> – Usuarios afectados.</li>
+            <li><strong>Discoverability</strong> – Facilidad de descubrimiento.</li>
+        </ul>
+    </div>
+
+    <p>
+        A continuación se describe brevemente cada uno de los criterios:
+    </p>
+
+    <ul>
+        <li>
+            <strong>Damage Potential:</strong> Evalúa el impacto que tendría la
+            explotación de la amenaza en términos económicos, operativos
+            o reputacionales. Cuanto mayor sea el daño potencial, mayor
+            será la puntuación asignada.
+        </li>
+
+        <li>
+            <strong>Reproducibility:</strong> Mide la facilidad con la que un atacante
+            puede repetir el ataque una vez descubierto el vector de explotación.
+            Si el ataque puede ejecutarse de forma consistente y automatizada,
+            la puntuación será elevada.
+        </li>
+
+        <li>
+            <strong>Exploitability:</strong> Determina el nivel de esfuerzo técnico
+            necesario para llevar a cabo el ataque. Factores como herramientas
+            disponibles públicamente, conocimientos requeridos o acceso previo
+            influyen en esta valoración.
+        </li>
+
+        <li>
+            <strong>Affected Users:</strong> Analiza el alcance del impacto,
+            considerando cuántos usuarios o sistemas resultarían afectados.
+            Una amenaza que comprometa a la totalidad de la base de usuarios
+            obtendrá una puntuación superior.
+        </li>
+
+        <li>
+            <strong>Discoverability:</strong> Evalúa la probabilidad de que la
+            vulnerabilidad sea descubierta por un atacante. Vulnerabilidades
+            visibles o fácilmente identificables en la superficie de ataque
+            reciben una puntuación mayor.
+        </li>
+    </ul>
+
+    <p>
+        El resultado final se obtiene calculando el promedio de las
+        cinco puntuaciones, permitiendo clasificar el riesgo como bajo,
+        medio o alto según umbrales previamente definidos por la organización.
+        Este enfoque facilita la comparación objetiva entre amenazas
+        y la asignación eficiente de recursos para su mitigación.
+    </p>
+
+    <p>
+        Permite priorizar amenazas asignando valores numéricos que facilitan
+        la toma de decisiones basada en criticidad.
+    </p>
+    <div class="top-link"><a href="#inicio">Volver al índice ↑</a></div>
+
+    <h3 id="pasta">2.3 PASTA</h3>
+
+    <p>
+        PASTA (Process for Attack Simulation and Threat Analysis) es una
+        metodología orientada al riesgo que integra el análisis de amenazas
+        con los objetivos estratégicos del negocio. A diferencia de enfoques
+        puramente técnicos, PASTA busca alinear la seguridad con el impacto
+        organizacional y los requisitos regulatorios.
+    </p>
+
+    <p>
+        Se compone de siete etapas estructuradas que abarcan desde la
+        definición del contexto de negocio y los activos críticos, hasta
+        la simulación de ataques y la priorización de riesgos. Este enfoque
+        permite comprender no solo cómo puede explotarse una vulnerabilidad,
+        sino también qué consecuencias tendría para la organización.
+    </p>
+    <div class="box">
+        <p>
+            Su uso es común en entornos corporativos donde la gestión de riesgos
+            forma parte de la estrategia empresarial. Entre sus principales
+            características destacan:
+        </p>
+        <ul>
+            <li>Orientación directa al impacto en el negocio.</li>
+            <li>Análisis basado en escenarios de ataque reales.</li>
+            <li>Integración entre equipos técnicos y directivos.</li>
+            <li>Evaluación formal del riesgo antes de definir controles.</li>
+        </ul>
+    </div>
+    <p>
+        PASTA es especialmente adecuada para sistemas complejos o críticos,
+        donde el análisis debe ir más allá de la identificación técnica
+        de vulnerabilidades.
+    </p>
+
+    <div class="top-link"><a href="#inicio">Volver al índice ↑</a></div>
+
+
+
+    <h3 id="octave">2.4 OCTAVE</h3>
+
+    <p>
+        OCTAVE (Operationally Critical Threat, Asset, and Vulnerability Evaluation)
+        es una metodología centrada en la gestión organizacional del riesgo.
+        Fue desarrollada por el Software Engineering Institute (SEI) y se
+        enfoca en la identificación de activos críticos y amenazas desde
+        una perspectiva estratégica.
+    </p>
+
+    <p>
+        A diferencia de metodologías técnicas como STRIDE, OCTAVE prioriza
+        el análisis interno de la organización, considerando políticas,
+        procedimientos, infraestructura y cultura de seguridad.
+    </p>
+    <div class="box">
+        <p>
+            Su uso es habitual en organizaciones que buscan establecer un
+            marco formal de gestión de riesgos de información. Entre sus
+            características principales se encuentran:
+        </p>
+
+        <ul>
+            <li>Enfoque basado en activos críticos.</li>
+            <li>Participación activa del personal interno.</li>
+            <li>Evaluación de amenazas organizacionales y técnicas.</li>
+            <li>Definición de estrategias de mitigación alineadas a la gestión empresarial.</li>
+        </ul>
+    </div>
+    <p>
+        OCTAVE resulta particularmente útil cuando se requiere una visión
+        global del riesgo en infraestructuras corporativas o entornos
+        institucionales.
+    </p>
+
+    <div class="top-link"><a href="#inicio">Volver al índice ↑</a></div>
+
+    <h3 id="magerit">2.5 MAGERIT</h3>
+
+    <p>
+        MAGERIT (Metodología de Análisis y Gestión de Riesgos de los Sistemas
+        de Información) es una metodología formal desarrollada en el ámbito
+        de la administración pública española. Su objetivo es proporcionar
+        un marco estructurado para identificar, analizar y gestionar riesgos
+        en sistemas de información.
+    </p>
+
+    <p>
+        Se basa en la identificación de activos, amenazas, vulnerabilidades
+        y salvaguardas, apoyándose en un catálogo detallado de elementos
+        que facilita la estandarización del análisis.
+    </p>
+    <div class="box">
+        <p>
+            Su uso es frecuente en entornos gubernamentales y organizaciones
+            que deben cumplir normativas de seguridad específicas. Entre sus
+            características destacan:
+        </p>
+
+        <ul>
+            <li>Enfoque formal y documentado.</li>
+            <li>Catálogo exhaustivo de amenazas y salvaguardas.</li>
+            <li>Orientación a cumplimiento normativo.</li>
+            <li>Estructura metodológica detallada y sistemática.</li>
+        </ul>
+    </div>
+    <p>
+        MAGERIT es especialmente apropiada cuando se requiere un análisis
+        exhaustivo y alineado con marcos regulatorios oficiales.
+    </p>
+
+    <div class="top-link"><a href="#inicio">Volver al índice ↑</a></div>
+
+    <h2></h2>
+
+    <p>
+        El modelado de amenazas constituye un componente esencial del desarrollo
+        seguro de software. Las metodologías estudiadas ofrecen enfoques complementarios
+        para identificar amenazas, evaluarlas y proponer controles de mitigación.
+    </p>
+
+    <p>
+        La metodología que se seleccione para el análisis en profundidad deberá
+        alinearse con los requisitos del ejercicio práctico y con la herramienta
+        Threat Analysis and Modeling Tool.
+    </p>
+
+    <div class="top-link"><a href="#inicio">Volver al índice ↑</a></div>
+
+    <h2 id="metodologia-profundidad">3. Descripción en Profundidad de la Metodología MTC-SDL (Microsoft)</h2>
+
+    <p>
+        La metodología MTC-SDL (Microsoft Threat Modeling dentro del Security
+        Development Lifecycle) es un enfoque estructurado para la identificación,
+        análisis y mitigación de amenazas durante el ciclo de vida del desarrollo
+        de software. Forma parte integral del modelo de desarrollo seguro promovido
+        por Microsoft y se basa en la integración sistemática del análisis de
+        seguridad desde las fases tempranas del diseño arquitectónico.
+    </p>
+
+    <p>
+        Esta metodología combina tres elementos fundamentales:
+    </p>
+
+    <ul>
+        <li>Modelado arquitectónico mediante Diagramas de Flujo de Datos (DFD).</li>
+        <li>Clasificación estructurada de amenazas mediante STRIDE.</li>
+        <li>Evaluación cuantitativa del riesgo mediante DREAD.</li>
+    </ul>
+
+    <p>
+        Su principal ventaja radica en que permite realizar un análisis repetible,
+        estructurado y alineado con principios formales de ingeniería de software.
+    </p>
+
+    <hr>
+
+    <h3>3.1 Integración con el Security Development Lifecycle (SDL)</h3>
+
+    <p>
+        El Security Development Lifecycle (SDL) es un marco de desarrollo seguro
+        que incorpora prácticas de seguridad en cada fase del SDLC. Dentro de este
+        marco, el modelado de amenazas se sitúa principalmente en la fase de diseño.
+    </p>
+
+    <p>
+        El objetivo es identificar riesgos antes de la implementación, cuando el
+        costo de mitigación es significativamente menor. Esta integración permite:
+    </p>
+
+    <ul>
+        <li>Reducir vulnerabilidades estructurales.</li>
+        <li>Definir requisitos de seguridad tempranos.</li>
+        <li>Evitar rediseños costosos.</li>
+        <li>Fortalecer la arquitectura desde su concepción.</li>
+    </ul>
+
+    <hr>
+
+    <h3>3.2 Fases de la Metodología MTC-SDL</h3>
+
+    <h4>1. Identificación de Activos</h4>
+
+    <p>
+        En esta fase se determinan los activos críticos del sistema, tales como:
+    </p>
+
+    <ul>
+        <li>Datos sensibles (credenciales, información financiera, datos personales).</li>
+        <li>Componentes del sistema (servidores, bases de datos, servicios web).</li>
+        <li>Procesos de negocio (transacciones, autenticación, pagos electrónicos).</li>
+    </ul>
+
+    <p>
+        La correcta identificación de activos es fundamental, ya que las amenazas
+        se evaluarán en función del impacto potencial sobre estos.
+    </p>
+
+    <h4>2. Creación del Diagrama de Flujo de Datos (DFD)</h4>
+
+    <p>
+        El DFD constituye la representación gráfica de la arquitectura lógica
+        del sistema. En él se identifican:
+    </p>
+
+    <ul>
+        <li>Entidades externas.</li>
+        <li>Procesos internos.</li>
+        <li>Almacenes de datos.</li>
+        <li>Flujos de información.</li>
+        <li>Fronteras de confianza.</li>
+    </ul>
+
+    <p>
+        Las fronteras de confianza son particularmente relevantes, ya que marcan
+        los puntos donde cambia el nivel de control o seguridad del sistema.
+    </p>
+
+    <h4>3. Identificación de Amenazas mediante STRIDE</h4>
+
+    <p>
+        Una vez definido el DFD, se aplican sistemáticamente las categorías
+        de STRIDE sobre cada elemento del diagrama. La herramienta de Microsoft
+        automatiza este proceso generando posibles amenazas asociadas a:
+    </p>
+
+    <ul>
+        <li>Procesos.</li>
+        <li>Flujos de datos.</li>
+        <li>Almacenes.</li>
+        <li>Entidades externas.</li>
+    </ul>
+
+    <p>
+        Cada amenaza identificada se documenta y se analiza individualmente.
+    </p>
+
+    <h4>4. Evaluación del Riesgo mediante DREAD</h4>
+
+    <p>
+        Para priorizar las amenazas detectadas, se aplica el modelo DREAD,
+        asignando valores cuantitativos a cada criterio. El promedio obtenido
+        permite clasificar la amenaza como:
+    </p>
+
+    <ul>
+        <li>Riesgo Alto</li>
+        <li>Riesgo Medio</li>
+        <li>Riesgo Bajo</li>
+    </ul>
+
+    <p>
+        Esta evaluación facilita la toma de decisiones y la asignación de
+        recursos para su mitigación.
+    </p>
+
+    <h4>5. Definición de Salvaguardas</h4>
+
+    <p>
+        En la última fase se establecen controles o salvaguardas que permitan
+        mitigar o eliminar las amenazas identificadas. Estas pueden incluir:
+    </p>
+
+    <ul>
+        <li>Controles técnicos (cifrado, autenticación multifactor, validación de entradas).</li>
+        <li>Controles organizativos (políticas de acceso, auditorías).</li>
+        <li>Controles de infraestructura (firewalls, segmentación de red).</li>
+    </ul>
+
+    <p>
+        Las salvaguardas deben documentarse y vincularse explícitamente a cada
+        amenaza detectada.
+    </p>
+
+    <hr>
+
+    <h3>3.3 Principales Características de la Metodología</h3>
+
+    <ul>
+        <li>Enfoque estructurado y repetible.</li>
+        <li>Integración directa con herramientas automatizadas.</li>
+        <li>Aplicable a arquitecturas web, móviles y empresariales.</li>
+        <li>Orientada tanto a análisis técnico como a gestión de riesgos.</li>
+        <li>Compatible con estándares de cumplimiento y auditoría.</li>
+    </ul>
+
+    <hr>
+
+    <h3>3.4 Ventajas y Limitaciones</h3>
+
+    <p><strong>Ventajas:</strong></p>
+    <ul>
+        <li>Claridad metodológica.</li>
+        <li>Automatización parcial del análisis.</li>
+        <li>Facilidad de documentación.</li>
+        <li>Enfoque práctico orientado a diseño.</li>
+    </ul>
+
+    <p><strong>Limitaciones:</strong></p>
+    <ul>
+        <li>Depende de la correcta elaboración del DFD.</li>
+        <li>Requiere criterio técnico en la asignación de valores DREAD.</li>
+        <li>No sustituye pruebas de penetración reales.</li>
+    </ul>
+
+    <hr>
+
+    <h3>3.5 Aplicabilidad al Caso de la Librería Electrónica</h3>
+
+    <p>
+        En el caso de la aplicación web de tres capas para un negocio de pago
+        electrónico, la metodología MTC-SDL resulta especialmente adecuada,
+        ya que permite modelar:
+    </p>
+
+    <ul>
+        <li>Interacciones entre cliente (navegador) y servidor web.</li>
+        <li>Procesos de autenticación y gestión de cuentas.</li>
+        <li>Transacciones de pago electrónico.</li>
+        <li>Acceso y almacenamiento de datos en el servidor de base de datos.</li>
+    </ul>
+
+    <p>
+        La aplicación de STRIDE permitirá identificar amenazas en cada capa,
+        mientras que DREAD facilitará la priorización de riesgos, y la definición
+        de salvaguardas garantizará el cumplimiento de requisitos de seguridad
+        desde la fase de análisis.
+    </p>
+
+    <p>
+        Por tanto, esta metodología constituye el marco idóneo para el desarrollo
+        del ejercicio práctico utilizando la herramienta Threat Analysis and
+        Modeling Tool.
+    </p>
+
+    <section id="practica">
+
+        <h2 id="tablas-dread">4. Desarrollo de la Práctica: Modelado de Amenazas con Microsoft Threat Modeling Tool</h2>
+
+        <p>
+            En el presente apartado se desarrolla la aplicación práctica del modelado
+            de amenazas utilizando la herramienta
+            <strong>Microsoft Threat Modeling Tool</strong>.
+            El objetivo es aplicar la metodología estudiada previamente para
+            identificar amenazas de seguridad en una aplicación web de tres capas,
+            analizar su nivel de riesgo y documentar las posibles salvaguardas.
+        </p>
+
+        <p>
+            La práctica se basa en el modelado de una aplicación web orientada a la
+            gestión de operaciones electrónicas, en la cual intervienen usuarios
+            externos, operadores administrativos, un servidor web y un servidor de
+            base de datos. La arquitectura responde al modelo clásico cliente-servidor
+            con separación de responsabilidades entre capa de presentación, lógica
+            de negocio y almacenamiento de datos.
+        </p>
+
+        <p>
+            El modelado se realizó mediante la construcción de un Diagrama de Flujo
+            de Datos (DFD), permitiendo representar visualmente los componentes del
+            sistema, los flujos de información y las fronteras de confianza.
+        </p>
+
+        <hr>
+
+        <h3>4.1 Descripción General de la Aplicación</h3>
+
+        <p>
+            La aplicación modelada corresponde a un sistema web estructurado en tres
+            capas principales:
+        </p>
+
+        <ul>
+            <li><strong>Usuarios externos:</strong> interactúan con la aplicación mediante solicitudes HTTP.</li>
+            <li><strong>Operador:</strong> actor administrativo con privilegios de gestión.</li>
+            <li><strong>Servidor Web:</strong> procesa solicitudes, ejecuta lógica de negocio y gestiona respuestas.
+            </li>
+            <li><strong>Servidor de Base de Datos:</strong> almacena y recupera información persistente.</li>
+            <li><strong>Almacenamiento físico:</strong> archivos de páginas web y archivos de base de datos.</li>
+        </ul>
+
+        <p>
+            La comunicación entre los componentes se realiza mediante flujos de datos
+            identificados como solicitudes (Requests), respuestas (Response), consultas
+            SQL y transferencia de datos. Además, se establecen fronteras de confianza
+            que delimitan zonas de diferente nivel de seguridad, especialmente entre
+            la red pública (usuarios) y la infraestructura interna.
+        </p>
+
+        <hr>
+
+        <h3>4.2 Modelo DFD de la Aplicación</h3>
+
+        <p>
+            A continuación se presenta el Diagrama de Flujo de Datos (DFD) generado
+            en la herramienta Microsoft Threat Modeling Tool. Este modelo representa
+            la arquitectura lógica del sistema, los flujos de información y las
+            fronteras de confianza utilizadas como base para la identificación
+            automática de amenazas bajo el modelo STRIDE.
+        </p>
+
+        <div class="modelo-imagen">
+            <!-- ESPACIO PARA IMAGEN DEL MODELO -->
+            <p style="text-align:center; font-style:italic; opacity:0.7;">
+                <img src="Images/Modelo.png" alt="Modelo DFD">
+            </p>
+        </div>
+
+        <p style="text-align:center; font-style:italic;">
+            Figura 1. Modelo DFD de la aplicación web.
+        </p>
+
+        <div class="modelo-imagen">
+            <!-- ESPACIO PARA IMAGEN DEL MODELO -->
+            <p style="text-align:center; font-style:italic; opacity:0.7;">
+                <img src="Images/Modelo-FC.png" alt="Modelo DFD">
+            </p>
+        </div>
+
+        <p style="text-align:center; font-style:italic;">
+            Figura 1. Modelo DFD de la aplicación web con fronteras de confianza.
+        </p>
+    </section>
+    <h2 id="tablas-stride">5. Tablas con amenazas STRIDE</h2>
+    <p>
+        Las siguientes tablas muestran cada una de la 30 amenazas catalogadas por STRIDE que la herramienta
+        encontró en el modelo DFD. Separadas por categorías y con su respectiva información y plan de mitigación, es
+        decir su salvaguarda.
+    </p>
+    <div class="seccion-stride">
+        <h3>Spoofing</h3>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>ID</th>
+                <th>Amenaza</th>
+                <th>Componente afectado</th>
+                <th>Descripción</th>
+                <th>Mitigación</th>
+            </tr>
+            <tr>
+                <td>S1</td>
+                <td>Spoofing del Usuario</td>
+                <td>Usuario → Servidor Web</td>
+                <td>Suplantación de identidad del usuario.</td>
+                <td>
+                    Implementar autenticación fuerte mediante credenciales seguras y
+                    mecanismos de doble factor. Las sesiones deben estar protegidas con
+                    tokens firmados y expiración automática. Se deben detectar intentos
+                    de autenticación anómalos y bloquear accesos sospechosos.
+                </td>
+            </tr>
+            <tr>
+                <td>S2</td>
+                <td>Spoofing del Servidor Web</td>
+                <td>Usuario → Servidor Web</td>
+                <td>Suplantación del servidor legítimo.</td>
+                <td>
+                    Utilizar certificados digitales válidos y obligar al uso de HTTPS.
+                    El cliente debe verificar la cadena de confianza del certificado.
+                    Se recomienda habilitar HSTS para evitar ataques de intermediario.
+                </td>
+            </tr>
+            <tr>
+                <td>S3</td>
+                <td>Spoofing del Servidor de BD</td>
+                <td>Servidor Web → BD</td>
+                <td>Suplantación del servidor de base de datos.</td>
+                <td>
+                    Implementar autenticación mutua entre servicios. Las credenciales
+                    deben ser únicas por servicio y rotarse periódicamente. El acceso
+                    debe limitarse únicamente a orígenes autorizados.
+                </td>
+            </tr>
+            <tr>
+                <td>S4</td>
+                <td>Spoofing de Archivos de BD</td>
+                <td>BD → Archivos BD</td>
+                <td>Redirección a archivos maliciosos.</td>
+                <td>
+                    Aplicar controles de integridad sobre los archivos de la base de datos.
+                    Limitar permisos del sistema de archivos y verificar rutas de acceso.
+                    Monitorear cambios no autorizados.
+                </td>
+            </tr>
+            <tr>
+                <td>S5</td>
+                <td>Spoofing del Operador</td>
+                <td>Operador → Servidor Web</td>
+                <td>Suplantación de cuentas administrativas.</td>
+                <td>
+                    Requerir autenticación multifactor para cuentas privilegiadas.
+                    Implementar control de acceso basado en roles y registrar todas
+                    las acciones administrativas realizadas.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="seccion-stride">
+        <h3>Tampering</h3>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>ID</th>
+                <th>Amenaza</th>
+                <th>Componente afectado</th>
+                <th>Descripción</th>
+                <th>Mitigación</th>
+            </tr>
+            <tr>
+                <td>T1</td>
+                <td>Falta de validación de entrada</td>
+                <td>Servidor Web</td>
+                <td>Manipulación de datos de entrada.</td>
+                <td>
+                    Validar todos los datos recibidos desde fuentes externas utilizando
+                    listas blancas. Rechazar entradas inesperadas y aplicar validación
+                    tanto del lado del cliente como del servidor.
+                </td>
+            </tr>
+            <tr>
+                <td>T2</td>
+                <td>Inyección en Base de Datos</td>
+                <td>Servidor BD</td>
+                <td>Alteración de consultas SQL.</td>
+                <td>
+                    Usar consultas parametrizadas y procedimientos almacenados.
+                    Evitar concatenar entradas del usuario en consultas.
+                    Limitar los privilegios de las cuentas de base de datos.
+                </td>
+            </tr>
+            <tr>
+                <td>T3</td>
+                <td>Cross-Site Scripting</td>
+                <td>Servidor Web</td>
+                <td>Inyección de scripts maliciosos.</td>
+                <td>
+                    Sanitizar y codificar todas las salidas enviadas al navegador.
+                    Implementar Content Security Policy para limitar ejecución de scripts.
+                    Validar y limpiar entradas del usuario.
+                </td>
+            </tr>
+            <tr>
+                <td>T4</td>
+                <td>Manipulación de Requests</td>
+                <td>Requests</td>
+                <td>Alteración de parámetros.</td>
+                <td>
+                    Validar la integridad de las solicitudes recibidas.
+                    Utilizar tokens o firmas para detectar modificaciones.
+                    Rechazar solicitudes inconsistentes o repetidas.
+                </td>
+            </tr>
+            <tr>
+                <td>T5</td>
+                <td>Manipulación de Responses</td>
+                <td>Responses</td>
+                <td>Alteración de respuestas.</td>
+                <td>
+                    Proteger las respuestas mediante HTTPS.
+                    Evitar exponer información sensible en el contenido.
+                    Validar los datos antes de enviarlos al cliente.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="seccion-stride">
+        <h3>Repudiation</h3>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>ID</th>
+                <th>Amenaza</th>
+                <th>Componente afectado</th>
+                <th>Descripción</th>
+                <th>Mitigación</th>
+            </tr>
+            <tr>
+                <td>R1</td>
+                <td>Repudio del Usuario</td>
+                <td>Usuario</td>
+                <td>Negación de acciones realizadas.</td>
+                <td>
+                    Registrar todas las acciones del usuario con identificador único,
+                    fecha y hora. Proteger los registros contra modificaciones.
+                    Utilizar relojes sincronizados.
+                </td>
+            </tr>
+            <tr>
+                <td>R2</td>
+                <td>Repudio del Servidor Web</td>
+                <td>Servidor Web</td>
+                <td>Negación de solicitudes recibidas.</td>
+                <td>
+                    Implementar auditoría centralizada de solicitudes y respuestas.
+                    Conservar los registros por un periodo definido.
+                    Asegurar su integridad.
+                </td>
+            </tr>
+            <tr>
+                <td>R3</td>
+                <td>Repudio del Servidor BD</td>
+                <td>Servidor BD</td>
+                <td>Negación de operaciones.</td>
+                <td>
+                    Registrar todas las operaciones críticas de la base de datos.
+                    Proteger los logs contra borrado o modificación.
+                    Revisarlos periódicamente.
+                </td>
+            </tr>
+            <tr>
+                <td>R4</td>
+                <td>Repudio del Operador</td>
+                <td>Operador</td>
+                <td>Negación de cambios administrativos.</td>
+                <td>
+                    Mantener un registro detallado de cambios administrativos.
+                    Asociar cada acción a un operador autenticado.
+                    Revisar auditorías regularmente.
+                </td>
+            </tr>
+            <tr>
+                <td>R5</td>
+                <td>Repudio de respuestas</td>
+                <td>Servidor Web</td>
+                <td>Negación de información enviada.</td>
+                <td>
+                    Registrar las respuestas generadas por el sistema.
+                    Incluir sellos de tiempo y metadatos.
+                    Proteger los registros de alteraciones.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="seccion-stride">
+        <h3>Information Disclosure</h3>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>ID</th>
+                <th>Amenaza</th>
+                <th>Componente afectado</th>
+                <th>Descripción</th>
+                <th>Mitigación</th>
+            </tr>
+            <tr>
+                <td>I1</td>
+                <td>Sniffing de Requests</td>
+                <td>Requests</td>
+                <td>Intercepción de datos.</td>
+                <td>
+                    Proteger todos los canales de comunicación con TLS.
+                    Evitar el uso de protocolos inseguros.
+                    Forzar HTTPS en todas las conexiones.
+                </td>
+            </tr>
+            <tr>
+                <td>I2</td>
+                <td>Sniffing Web-BD</td>
+                <td>Consulta SQL</td>
+                <td>Exposición de datos sensibles.</td>
+                <td>
+                    Cifrar las comunicaciones entre el servidor web y la base de datos.
+                    Usar certificados internos y restringir el acceso de red.
+                </td>
+            </tr>
+            <tr>
+                <td>I3</td>
+                <td>Acceso no autorizado a BD</td>
+                <td>Archivos BD</td>
+                <td>Lectura indebida de información.</td>
+                <td>
+                    Aplicar cifrado en reposo a los archivos de la base de datos.
+                    Limitar el acceso mediante permisos estrictos.
+                    Monitorear accesos.
+                </td>
+            </tr>
+            <tr>
+                <td>I4</td>
+                <td>Exposición de respuestas</td>
+                <td>Responses</td>
+                <td>Divulgación innecesaria.</td>
+                <td>
+                    Enviar únicamente la información estrictamente necesaria.
+                    Filtrar datos sensibles antes de responder.
+                    Validar la salida generada.
+                </td>
+            </tr>
+            <tr>
+                <td>I5</td>
+                <td>Mensajes de error detallados</td>
+                <td>Servidor Web</td>
+                <td>Revelación de información interna.</td>
+                <td>
+                    Configurar mensajes de error genéricos para el usuario.
+                    Registrar detalles técnicos solo en logs internos.
+                    Evitar mostrar trazas de sistema.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="seccion-stride">
+        <h3>Denial of Service</h3>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>ID</th>
+                <th>Amenaza</th>
+                <th>Componente afectado</th>
+                <th>Descripción</th>
+                <th>Mitigación</th>
+            </tr>
+            <tr>
+                <td>D1</td>
+                <td>Interrupción de Requests</td>
+                <td>Requests</td>
+                <td>Bloqueo de solicitudes.</td>
+                <td>
+                    Implementar limitación de tasa por usuario o IP.
+                    Detectar patrones anómalos de tráfico.
+                    Bloquear fuentes maliciosas.
+                </td>
+            </tr>
+            <tr>
+                <td>D2</td>
+                <td>Interrupción de Responses</td>
+                <td>Responses</td>
+                <td>Saturación del canal.</td>
+                <td>
+                    Configurar tiempos de espera y control de tráfico.
+                    Liberar recursos ante conexiones inactivas.
+                    Priorizar solicitudes legítimas.
+                </td>
+            </tr>
+            <tr>
+                <td>D3</td>
+                <td>Consumo excesivo (Web)</td>
+                <td>Servidor Web</td>
+                <td>Sobrecarga del servidor.</td>
+                <td>
+                    Limitar el uso de CPU y memoria por proceso.
+                    Monitorear el rendimiento del sistema.
+                    Escalar recursos cuando sea necesario.
+                </td>
+            </tr>
+            <tr>
+                <td>D4</td>
+                <td>Consumo excesivo (BD)</td>
+                <td>Servidor BD</td>
+                <td>Saturación de consultas.</td>
+                <td>
+                    Controlar la complejidad de las consultas.
+                    Definir límites de tiempo de ejecución.
+                    Optimizar índices y acceso a datos.
+                </td>
+            </tr>
+            <tr>
+                <td>D5</td>
+                <td>Caída del servicio</td>
+                <td>Web / BD</td>
+                <td>Indisponibilidad del sistema.</td>
+                <td>
+                    Implementar monitoreo continuo del servicio.
+                    Configurar reinicio automático ante fallos.
+                    Mantener planes de recuperación.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="seccion-stride">
+        <h3>Elevation of Privilege</h3>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>ID</th>
+                <th>Amenaza</th>
+                <th>Componente afectado</th>
+                <th>Descripción</th>
+                <th>Mitigación</th>
+            </tr>
+            <tr>
+                <td>E1</td>
+                <td>Impersonación Web → BD</td>
+                <td>Servidor Web</td>
+                <td>Escalamiento de privilegios.</td>
+                <td>
+                    Aplicar el principio de mínimo privilegio.
+                    Separar cuentas por función.
+                    Revisar permisos periódicamente.
+                </td>
+            </tr>
+            <tr>
+                <td>E2</td>
+                <td>RCE en Servidor Web</td>
+                <td>Servidor Web</td>
+                <td>Ejecución remota de código.</td>
+                <td>
+                    Mantener el sistema actualizado con parches.
+                    Deshabilitar servicios innecesarios.
+                    Aplicar hardening del servidor.
+                </td>
+            </tr>
+            <tr>
+                <td>E3</td>
+                <td>RCE en Servidor BD</td>
+                <td>Servidor BD</td>
+                <td>Compromiso total del sistema.</td>
+                <td>
+                    Aislar el servidor de base de datos en la red.
+                    Limitar acceso solo a servicios autorizados.
+                    Monitorear actividad sospechosa.
+                </td>
+            </tr>
+            <tr>
+                <td>E4</td>
+                <td>Cambio de flujo de ejecución</td>
+                <td>Servidor Web</td>
+                <td>Alteración de lógica interna.</td>
+                <td>
+                    Validar estrictamente los datos de entrada.
+                    Proteger funciones críticas.
+                    Revisar el flujo lógico del sistema.
+                </td>
+            </tr>
+            <tr>
+                <td>E5</td>
+                <td>CSRF</td>
+                <td>Servidor Web</td>
+                <td>Acciones no autorizadas.</td>
+                <td>
+                    Implementar tokens CSRF únicos por sesión.
+                    Validar el origen de las solicitudes.
+                    Requerir confirmación para acciones críticas.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h2 id="tablas-dread2">6. Tablas DREAD</h2>
+    <p>
+        Las siguientes tablas evaluan lo realizado durante las tablas STRIDE.
+    </p>
+
+    <div class="seccion-stride">
+        <h3>DREAD – Tampering</h3>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>ID</th>
+                <th>Damage</th>
+                <th>Reproducibility</th>
+                <th>Exploitability</th>
+                <th>Affected Users</th>
+                <th>Discoverability</th>
+                <th>Promedio</th>
+            </tr>
+
+            <tr>
+                <td>T1</td>
+                <td>4</td>
+                <td>5</td>
+                <td>5</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4.4 (Alto)</td>
+            </tr>
+            <tr>
+                <td>T2</td>
+                <td>5</td>
+                <td>5</td>
+                <td>4</td>
+                <td>5</td>
+                <td>4</td>
+                <td>4.6 (Crítico)</td>
+            </tr>
+            <tr>
+                <td>T3</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4</td>
+                <td>5</td>
+                <td>4.2 (Alto)</td>
+            </tr>
+            <tr>
+                <td>T4</td>
+                <td>3</td>
+                <td>4</td>
+                <td>4</td>
+                <td>3</td>
+                <td>4</td>
+                <td>3.6 (Medio)</td>
+            </tr>
+            <tr>
+                <td>T5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>3</td>
+                <td>3</td>
+                <td>3</td>
+                <td>3.2 (Medio)</td>
+            </tr>
+
+        </table>
+    </div>
+    <div class="seccion-stride">
+        <h3>DREAD – Repudiation</h3>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>ID</th>
+                <th>Damage</th>
+                <th>Reproducibility</th>
+                <th>Exploitability</th>
+                <th>Affected Users</th>
+                <th>Discoverability</th>
+                <th>Promedio</th>
+            </tr>
+
+            <tr>
+                <td>R1</td>
+                <td>4</td>
+                <td>5</td>
+                <td>3</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4.0 (Alto)</td>
+            </tr>
+            <tr>
+                <td>R2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>3</td>
+                <td>3</td>
+                <td>3</td>
+                <td>3.2 (Medio)</td>
+            </tr>
+            <tr>
+                <td>R3</td>
+                <td>4</td>
+                <td>3</td>
+                <td>2</td>
+                <td>3</td>
+                <td>2</td>
+                <td>2.8 (Bajo)</td>
+            </tr>
+            <tr>
+                <td>R4</td>
+                <td>4</td>
+                <td>4</td>
+                <td>3</td>
+                <td>3</td>
+                <td>3</td>
+                <td>3.4 (Medio)</td>
+            </tr>
+            <tr>
+                <td>R5</td>
+                <td>3</td>
+                <td>3</td>
+                <td>2</td>
+                <td>3</td>
+                <td>2</td>
+                <td>2.6 (Bajo)</td>
+            </tr>
+
+        </table>
+    </div>
+    <div class="seccion-stride">
+        <h3>DREAD – Information Disclosure</h3>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>ID</th>
+                <th>Damage</th>
+                <th>Reproducibility</th>
+                <th>Exploitability</th>
+                <th>Affected Users</th>
+                <th>Discoverability</th>
+                <th>Promedio</th>
+            </tr>
+
+            <tr>
+                <td>I1</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4</td>
+                <td>5</td>
+                <td>3</td>
+                <td>4.0 (Alto)</td>
+            </tr>
+            <tr>
+                <td>I2</td>
+                <td>5</td>
+                <td>3</td>
+                <td>3</td>
+                <td>5</td>
+                <td>2</td>
+                <td>3.6 (Medio)</td>
+            </tr>
+            <tr>
+                <td>I3</td>
+                <td>5</td>
+                <td>3</td>
+                <td>3</td>
+                <td>5</td>
+                <td>3</td>
+                <td>3.8 (Medio-Alto)</td>
+            </tr>
+            <tr>
+                <td>I4</td>
+                <td>3</td>
+                <td>4</td>
+                <td>3</td>
+                <td>3</td>
+                <td>4</td>
+                <td>3.4 (Medio)</td>
+            </tr>
+            <tr>
+                <td>I5</td>
+                <td>2</td>
+                <td>5</td>
+                <td>4</td>
+                <td>2</td>
+                <td>5</td>
+                <td>3.6 (Medio)</td>
+            </tr>
+
+        </table>
+    </div>
+    <div class="seccion-stride">
+        <h3>DREAD – Denial of Service</h3>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>ID</th>
+                <th>Damage</th>
+                <th>Reproducibility</th>
+                <th>Exploitability</th>
+                <th>Affected Users</th>
+                <th>Discoverability</th>
+                <th>Promedio</th>
+            </tr>
+
+            <tr>
+                <td>D1</td>
+                <td>4</td>
+                <td>5</td>
+                <td>5</td>
+                <td>5</td>
+                <td>4</td>
+                <td>4.6 (Crítico)</td>
+            </tr>
+            <tr>
+                <td>D2</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4</td>
+                <td>5</td>
+                <td>3</td>
+                <td>4.0 (Alto)</td>
+            </tr>
+            <tr>
+                <td>D3</td>
+                <td>5</td>
+                <td>4</td>
+                <td>4</td>
+                <td>5</td>
+                <td>3</td>
+                <td>4.2 (Alto)</td>
+            </tr>
+            <tr>
+                <td>D4</td>
+                <td>5</td>
+                <td>3</td>
+                <td>3</td>
+                <td>5</td>
+                <td>2</td>
+                <td>3.6 (Medio)</td>
+            </tr>
+            <tr>
+                <td>D5</td>
+                <td>5</td>
+                <td>2</td>
+                <td>2</td>
+                <td>5</td>
+                <td>2</td>
+                <td>3.2 (Medio)</td>
+            </tr>
+
+        </table>
+    </div>
+    <div class="seccion-stride">
+        <h3>DREAD – Elevation of Privilege</h3>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>ID</th>
+                <th>Damage</th>
+                <th>Reproducibility</th>
+                <th>Exploitability</th>
+                <th>Affected Users</th>
+                <th>Discoverability</th>
+                <th>Promedio</th>
+            </tr>
+
+            <tr>
+                <td>E1</td>
+                <td>5</td>
+                <td>4</td>
+                <td>3</td>
+                <td>5</td>
+                <td>3</td>
+                <td>4.0 (Alto)</td>
+            </tr>
+            <tr>
+                <td>E2</td>
+                <td>5</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>3</td>
+                <td>4.0 (Alto)</td>
+            </tr>
+            <tr>
+                <td>E3</td>
+                <td>5</td>
+                <td>2</td>
+                <td>3</td>
+                <td>5</td>
+                <td>2</td>
+                <td>3.4 (Medio)</td>
+            </tr>
+            <tr>
+                <td>E4</td>
+                <td>4</td>
+                <td>3</td>
+                <td>3</td>
+                <td>4</td>
+                <td>3</td>
+                <td>3.4 (Medio)</td>
+            </tr>
+            <tr>
+                <td>E5</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4.0 (Alto)</td>
+            </tr>
+
+        </table>
+    </div>
+    <div class="seccion-stride">
+        <h2 id="matriz">6. Matriz Global de Riesgo</h2>
+
+        <p>
+            La siguiente matriz clasifica las amenazas identificadas según su nivel de riesgo promedio (modelo DREAD),
+            permitiendo visualizar de manera consolidada la criticidad del sistema.
+        </p>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>Nivel de Riesgo</th>
+                <th>Rango DREAD</th>
+                <th>Amenazas Identificadas</th>
+                <th>Cantidad</th>
+            </tr>
+
+            <tr>
+                <td>🔴 Crítico</td>
+                <td>≥ 4.5</td>
+                <td>T2 (Inyección SQL), D1 (Interrupción masiva de Requests)</td>
+                <td>2</td>
+            </tr>
+
+            <tr>
+                <td>🟠 Alto</td>
+                <td>4.0 – 4.49</td>
+                <td>S1, T1, T3, R1, I1, D2, D3, E1, E2, E5</td>
+                <td>10</td>
+            </tr>
+
+            <tr>
+                <td>🟡 Medio</td>
+                <td>3.0 – 3.99</td>
+                <td>S2, S3, S5, T4, T5, R2, R4, I2, I3, I4, I5, D4, D5, E3, E4</td>
+                <td>15</td>
+            </tr>
+
+            <tr>
+                <td>🟢 Bajo</td>
+                <td>&lt; 3.0</td>
+                <td>S4, R3, R5</td>
+                <td>3</td>
+            </tr>
+
+        </table>
+
+        <p>
+            Se observa que el 40% de las amenazas se ubican en nivel Alto o Crítico, lo cual evidencia una superficie de
+            ataque significativa en componentes expuestos y procesos críticos del sistema.
+        </p>
+
+    </div>
+    <div class="seccion-stride">
+        <h2 id="ranking">7. Ranking General de Amenazas Prioritarias</h2>
+
+        <p>
+            El siguiente ranking presenta las amenazas ordenadas por nivel de riesgo (promedio DREAD), priorizando
+            aquellas que requieren atención inmediata dentro de la estrategia de mitigación.
+        </p>
+
+        <table class="tabla-amenazas">
+            <tr>
+                <th>Posición</th>
+                <th>ID</th>
+                <th>Amenaza</th>
+                <th>Categoría STRIDE</th>
+                <th>Promedio DREAD</th>
+                <th>Nivel</th>
+            </tr>
+
+            <tr>
+                <td>1</td>
+                <td>T2</td>
+                <td>Inyección en Base de Datos</td>
+                <td>Tampering</td>
+                <td>4.6</td>
+                <td>🔴 Crítico</td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>D1</td>
+                <td>Interrupción masiva de Requests</td>
+                <td>Denial of Service</td>
+                <td>4.6</td>
+                <td>🔴 Crítico</td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>T1</td>
+                <td>Falta de validación de entrada</td>
+                <td>Tampering</td>
+                <td>4.4</td>
+                <td>🟠 Alto</td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>T3</td>
+                <td>Cross-Site Scripting</td>
+                <td>Tampering</td>
+                <td>4.2</td>
+                <td>🟠 Alto</td>
+            </tr>
+
+            <tr>
+                <td>5</td>
+                <td>D3</td>
+                <td>Consumo excesivo del Servidor Web</td>
+                <td>Denial of Service</td>
+                <td>4.2</td>
+                <td>🟠 Alto</td>
+            </tr>
+
+            <tr>
+                <td>6</td>
+                <td>S1</td>
+                <td>Spoofing del Usuario</td>
+                <td>Spoofing</td>
+                <td>4.2</td>
+                <td>🟠 Alto</td>
+            </tr>
+
+            <tr>
+                <td>7</td>
+                <td>R1</td>
+                <td>Repudio del Usuario</td>
+                <td>Repudiation</td>
+                <td>4.0</td>
+                <td>🟠 Alto</td>
+            </tr>
+
+            <tr>
+                <td>8</td>
+                <td>I1</td>
+                <td>Sniffing de Requests</td>
+                <td>Information Disclosure</td>
+                <td>4.0</td>
+                <td>🟠 Alto</td>
+            </tr>
+
+            <tr>
+                <td>9</td>
+                <td>E1</td>
+                <td>Impersonación Web → BD</td>
+                <td>Elevation of Privilege</td>
+                <td>4.0</td>
+                <td>🟠 Alto</td>
+            </tr>
+
+            <tr>
+                <td>10</td>
+                <td>E2</td>
+                <td>RCE en Servidor Web</td>
+                <td>Elevation of Privilege</td>
+                <td>4.0</td>
+                <td>🟠 Alto</td>
+            </tr>
+
+        </table>
+
+        <p>
+            El ranking confirma que las amenazas relacionadas con manipulación de datos (Tampering) y denegación de
+            servicio (DoS) representan el mayor riesgo sistémico. En consecuencia, las primeras acciones de mitigación
+            deben centrarse en validación de entradas, control de consultas SQL, limitación de tráfico y segmentación de
+            recursos.
+        </p>
+
+    </div>
+    <div class="seccion-stride">
+        <h2 id="conclusiones">Conclusiones Técnicas Finales</h2>
+
+        <p>
+            El análisis sistemático de amenazas mediante la metodología STRIDE permitió identificar de manera
+            estructurada los vectores de riesgo asociados a los distintos componentes del sistema, incluyendo la
+            interacción Usuario–Servidor Web, la comunicación con la Base de Datos y la gestión de archivos
+            persistentes. La descomposición por categorías (Spoofing, Tampering, Repudiation, Information Disclosure,
+            Denial of Service y Elevation of Privilege) facilitó una evaluación integral tanto de amenazas externas como
+            internas.
+        </p>
+
+        <p>
+            La posterior aplicación del modelo DREAD permitió cuantificar el nivel de riesgo de cada amenaza
+            identificada, priorizando aquellas con mayor impacto potencial. Los resultados evidencian que las categorías
+            con mayor criticidad promedio son <strong>Denial of Service</strong> y <strong>Tampering</strong>,
+            particularmente en escenarios relacionados con sobrecarga de recursos, inyección de código y manipulación
+            directa de datos persistentes. Estas amenazas presentan altos valores en las dimensiones de daño,
+            reproducibilidad y afectación de usuarios, lo que las posiciona como riesgos prioritarios en términos de
+            mitigación.
+        </p>
+
+        <p>
+            Asimismo, las amenazas de <strong>Elevation of Privilege</strong> y <strong>Spoofing</strong> muestran un
+            nivel de riesgo significativo, especialmente cuando involucran cuentas privilegiadas o fallas en mecanismos
+            de autenticación y control de acceso. Esto confirma la necesidad de implementar controles robustos como
+            autenticación multifactor (MFA), separación estricta de privilegios, validación de tokens firmados y
+            segmentación de servicios.
+        </p>
+
+        <p>
+            En el ámbito de <strong>Information Disclosure</strong>, se identificó que la exposición de datos sensibles,
+            ya sea por configuraciones inseguras o vulnerabilidades en consultas, puede generar impactos críticos en la
+            confidencialidad y cumplimiento normativo. Por tanto, el cifrado en tránsito y en reposo, junto con
+            controles de acceso granulares y monitoreo continuo, se consideran medidas obligatorias dentro de la
+            arquitectura de seguridad.
+        </p>
+
+        <p>
+            Desde una perspectiva arquitectónica, el modelo demuestra que los mayores riesgos se concentran en los
+            puntos de interconexión entre componentes, particularmente en interfaces expuestas (APIs, endpoints web y
+            accesos administrativos). Esto resalta la importancia de adoptar un enfoque de defensa en profundidad
+            (Defense in Depth), incorporando controles preventivos, detectivos y correctivos en cada capa del sistema.
+        </p>
+
+        <p>
+            Finalmente, el uso combinado de STRIDE y DREAD no solo permitió identificar amenazas, sino también
+            establecer una jerarquización objetiva de riesgos que orienta la toma de decisiones en materia de seguridad.
+            Este enfoque metodológico proporciona una base sólida para la definición de políticas, controles técnicos y
+            estrategias de mitigación, contribuyendo al fortalecimiento de la postura de seguridad general del sistema y
+            reduciendo significativamente la probabilidad de incidentes críticos.
+        </p>
+
+        <div class="modelo-imagen">
+            <!-- ESPACIO PARA IMAGEN DEL MODELO -->
+            <p style="text-align:center; font-style:italic; opacity:0.7;">
+                <img src="Images/Lista.png" alt="Modelo DFD">
+            </p>
+        </div>
+
+        <p style="text-align:center; font-style:italic;">
+            Figura 1. Modelo DFD de la aplicación web con fronteras de confianza.
+        </p>
+
+    </div>
+
+
+</body>
+
+</html>
